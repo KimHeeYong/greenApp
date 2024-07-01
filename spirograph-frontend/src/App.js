@@ -10,6 +10,7 @@ const Spirograph = () => {
   const [O, setO] = useState(45);
   const [lineWidth, setLineWidth] = useState(2);
   const [gearType, setGearType] = useState('default');
+  const [speed, setSpeed] = useState(1);
   const [error, setError] = useState('');
   const canvasRef = useRef(null);
 
@@ -49,12 +50,12 @@ const Spirograph = () => {
           ctx.lineTo(250 + points[i + 1][0], 250 + points[i + 1][1]);
           ctx.stroke();
           i++;
-          requestAnimationFrame(drawStep);
+          setTimeout(drawStep, 1000 / speed);
         }
       };
       drawStep();
     }
-  }, [points, lineWidth]);
+  }, [points, lineWidth, speed]);
 
   const handleInputChange = (setter) => (event) => {
     const value = Number(event.target.value);
@@ -65,7 +66,10 @@ const Spirograph = () => {
   const handleGearTypeChange = (event) => {
     const value = event.target.value;
     setGearType(value);
-    fetchPattern(R, r, O, value);
+    setR(80); // 최적의 R 비율로 초기화
+    setr(36); // 최적의 r 비율로 초기화
+    setO(45); // 최적의 O 비율로 초기화
+    fetchPattern(80, 36, 45, value);
   };
 
   const saveImage = () => {
@@ -104,6 +108,10 @@ const Spirograph = () => {
         <div className="form-group">
           <label>Line Width:</label>
           <input type="number" value={lineWidth} min="1" max="10" onChange={(e) => setLineWidth(Number(e.target.value))} />
+        </div>
+        <div className="form-group">
+          <label>Speed:</label>
+          <input type="range" value={speed} min="1" max="10" onChange={(e) => setSpeed(Number(e.target.value))} />
         </div>
         {error && <div className="error">{error}</div>}
       </form>
