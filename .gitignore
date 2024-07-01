@@ -1,0 +1,56 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+/media
+
+# Node modules
+node_modules/
+npm-debug.log
+
+# Build directories
+build/
+dist/
+
+# Mac OS X
+.DS_Store
+
+# Linux
+*.swp
+
+# IDEs and editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# React and React Native
+spirograph-frontend/node_modules/
+spirograph-frontend/build/
+
+SpirographApp/node_modules/
+SpirographApp/android/app/build/
+SpirographApp/ios/Pods/
+SpirographApp/*.hmap
+SpirographApp/*.ipa
+SpirographApp/*.xcuserstate
+
+# Expo
+.expo/
+.expo-shared/
+
+# Miscellaneous
+*.lock
+yarn-debug.log*
+yarn-error.log*
+
+# Python virtual environment
+env/
