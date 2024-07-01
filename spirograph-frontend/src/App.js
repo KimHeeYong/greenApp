@@ -10,7 +10,7 @@ const Spirograph = () => {
   const [O, setO] = useState(45);
   const [lineWidth, setLineWidth] = useState(2);
   const [gearType, setGearType] = useState('default');
-  const [speed, setSpeed] = useState(1);
+  const [speed, setSpeed] = useState(5);
   const [error, setError] = useState('');
   const canvasRef = useRef(null);
 
@@ -49,8 +49,8 @@ const Spirograph = () => {
           ctx.moveTo(250 + points[i][0], 250 + points[i][1]);
           ctx.lineTo(250 + points[i + 1][0], 250 + points[i + 1][1]);
           ctx.stroke();
-          i++;
-          setTimeout(drawStep, 1000 / speed);
+          i += Math.max(1, speed); // 속도에 따라 그릴 점의 수를 증가시킵니다.
+          requestAnimationFrame(drawStep);
         }
       };
       drawStep();

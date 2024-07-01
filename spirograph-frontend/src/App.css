@@ -36,11 +36,17 @@ label {
 }
 
 input[type="number"],
-input[type="color"] {
+input[type="color"],
+select {
   padding: 5px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  margin-right: 10px;
+}
+
+input[type="range"] {
+  margin: 10px 0;
 }
 
 button {
@@ -62,7 +68,6 @@ button:hover {
   color: red;
   margin-top: 10px;
 }
-
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
