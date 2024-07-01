@@ -14,6 +14,7 @@ const Spirograph = () => {
   const [color, setColor] = useState('#000000');
   const [error, setError] = useState('');
   const canvasRef = useRef(null);
+  const animationRef = useRef(null);
 
   const fetchPattern = (newR = R, newr = r, newO = O, newGearType = gearType) => {
     if (newR <= 0 || newr <= 0 || newO <= 0) {
@@ -36,6 +37,9 @@ const Spirograph = () => {
 
   useEffect(() => {
     if (points.length > 0) {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
       const canvas = canvasRef.current;
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -50,7 +54,7 @@ const Spirograph = () => {
           ctx.lineTo(250 + points[i + 1][0], 250 + points[i + 1][1]);
           ctx.stroke();
           i += Math.max(1, speed); // 속도에 따라 그릴 점의 수를 증가시킵니다.
-          requestAnimationFrame(drawStep);
+          animationRef.current = requestAnimationFrame(drawStep);
         }
       };
       drawStep();
