@@ -8,6 +8,8 @@ const Spirograph = () => {
   const [R, setR] = useState(80);
   const [r, setr] = useState(36);
   const [O, setO] = useState(45);
+  const [color, setColor] = useState('#000000');
+  const [lineWidth, setLineWidth] = useState(2);
   const [error, setError] = useState('');
   const canvasRef = useRef(null);
 
@@ -36,6 +38,8 @@ const Spirograph = () => {
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.beginPath();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
       points.forEach((point, index) => {
         if (index === 0) {
           ctx.moveTo(250 + point[0], 250 + point[1]);
@@ -45,7 +49,7 @@ const Spirograph = () => {
       });
       ctx.stroke();
     }
-  }, [points]);
+  }, [points, color, lineWidth]);
 
   const handleInputChange = (setter) => (event) => {
     const value = Number(event.target.value);
@@ -76,6 +80,14 @@ const Spirograph = () => {
         <div className="form-group">
           <label>O:</label>
           <input type="number" value={O} onChange={handleInputChange(setO)} />
+        </div>
+        <div className="form-group">
+          <label>Color:</label>
+          <input type="color" value={color} onChange={(e) => setColor(e.target.value)} />
+        </div>
+        <div className="form-group">
+          <label>Line Width:</label>
+          <input type="number" value={lineWidth} min="1" max="10" onChange={(e) => setLineWidth(Number(e.target.value))} />
         </div>
         {error && <div className="error">{error}</div>}
       </form>
