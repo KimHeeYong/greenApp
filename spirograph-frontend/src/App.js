@@ -11,13 +11,13 @@ const Spirograph = () => {
   const [error, setError] = useState('');
   const canvasRef = useRef(null);
 
-  const fetchPattern = () => {
-    if (R <= 0 || r <= 0 || O <= 0) {
+  const fetchPattern = (newR = R, newr = r, newO = O) => {
+    if (newR <= 0 || newr <= 0 || newO <= 0) {
       setError('R, r, O values must be positive numbers.');
       return;
     }
     setError('');
-    axios.get(`http://localhost:8000/api/patterns/?R=${R}&r=${r}&O=${O}`)
+    axios.get(`http://localhost:8000/api/patterns/?R=${newR}&r=${newr}&O=${newO}`)
       .then(response => {
         setPoints(response.data.points);
       })
@@ -47,9 +47,10 @@ const Spirograph = () => {
     }
   }, [points]);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    fetchPattern();
+  const handleInputChange = (setter) => (event) => {
+    const value = Number(event.target.value);
+    setter(value);
+    fetchPattern(R, r, O);
   };
 
   const saveImage = () => {
@@ -63,21 +64,20 @@ const Spirograph = () => {
   return (
     <div className="container">
       <h1>Spirograph Patterns</h1>
-      <form onSubmit={handleSubmit}>
+      <form>
         <div className="form-group">
           <label>R:</label>
-          <input type="number" value={R} onChange={(e) => setR(Number(e.target.value))} />
+          <input type="number" value={R} onChange={handleInputChange(setR)} />
         </div>
         <div className="form-group">
           <label>r:</label>
-          <input type="number" value={r} onChange={(e) => setr(Number(e.target.value))} />
+          <input type="number" value={r} onChange={handleInputChange(setr)} />
         </div>
         <div className="form-group">
           <label>O:</label>
-          <input type="number" value={O} onChange={(e) => setO(Number(e.target.value))} />
+          <input type="number" value={O} onChange={handleInputChange(setO)} />
         </div>
         {error && <div className="error">{error}</div>}
-        <button type="submit">Generate Pattern</button>
       </form>
       <button onClick={saveImage}>Save Image</button>
       <canvas ref={canvasRef} id="spiroCanvas" width="500" height="500" style={{ border: '1px solid black' }}></canvas>
