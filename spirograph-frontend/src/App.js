@@ -8,19 +8,18 @@ const Spirograph = () => {
   const [R, setR] = useState(80);
   const [r, setr] = useState(36);
   const [O, setO] = useState(45);
-  const [color, setColor] = useState('#000000');
   const [lineWidth, setLineWidth] = useState(2);
-  const [patternType, setPatternType] = useState('circle');
+  const [gearType, setGearType] = useState('default');
   const [error, setError] = useState('');
   const canvasRef = useRef(null);
 
-  const fetchPattern = (newR = R, newr = r, newO = O, newPatternType = patternType) => {
+  const fetchPattern = (newR = R, newr = r, newO = O, newGearType = gearType) => {
     if (newR <= 0 || newr <= 0 || newO <= 0) {
       setError('R, r, O values must be positive numbers.');
       return;
     }
     setError('');
-    axios.get(`http://localhost:8000/api/patterns/?R=${newR}&r=${newr}&O=${newO}&type=${newPatternType}`)
+    axios.get(`http://localhost:8000/api/patterns/?R=${newR}&r=${newr}&O=${newO}&gearType=${newGearType}`)
       .then(response => {
         setPoints(response.data.points);
       })
@@ -38,19 +37,24 @@ const Spirograph = () => {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.beginPath();
-      ctx.strokeStyle = color;
       ctx.lineWidth = lineWidth;
-      points.forEach((point, index) => {
-        if (index === 0) {
-          ctx.moveTo(250 + point[0], 250 + point[1]);
-        } else {
-          ctx.lineTo(250 + point[0], 250 + point[1]);
+
+      let i = 0;
+      const drawStep = () => {
+        if (i < points.length - 1) {
+          const color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+          ctx.strokeStyle = color;
+          ctx.beginPath();
+          ctx.moveTo(250 + points[i][0], 250 + points[i][1]);
+          ctx.lineTo(250 + points[i + 1][0], 250 + points[i + 1][1]);
+          ctx.stroke();
+          i++;
+          requestAnimationFrame(drawStep);
         }
-      });
-      ctx.stroke();
+      };
+      drawStep();
     }
-  }, [points, color, lineWidth]);
+  }, [points, lineWidth]);
 
   const handleInputChange = (setter) => (event) => {
     const value = Number(event.target.value);
@@ -58,9 +62,9 @@ const Spirograph = () => {
     fetchPattern(R, r, O);
   };
 
-  const handlePatternTypeChange = (event) => {
+  const handleGearTypeChange = (event) => {
     const value = event.target.value;
-    setPatternType(value);
+    setGearType(value);
     fetchPattern(R, r, O, value);
   };
 
@@ -77,12 +81,12 @@ const Spirograph = () => {
       <h1>Spirograph Patterns</h1>
       <form>
         <div className="form-group">
-          <label>Pattern Type:</label>
-          <select value={patternType} onChange={handlePatternTypeChange}>
-            <option value="circle">Circle</option>
+          <label>Gear Type:</label>
+          <select value={gearType} onChange={handleGearTypeChange}>
+            <option value="default">Default</option>
             <option value="square">Square</option>
             <option value="triangle">Triangle</option>
-            {/* 추가 패턴 종류를 여기에 추가할 수 있습니다 */}
+            {/* 추가 기어 종류를 여기에 추가할 수 있습니다 */}
           </select>
         </div>
         <div className="form-group">
@@ -96,10 +100,6 @@ const Spirograph = () => {
         <div className="form-group">
           <label>O:</label>
           <input type="number" value={O} onChange={handleInputChange(setO)} />
-        </div>
-        <div className="form-group">
-          <label>Color:</label>
-          <input type="color" value={color} onChange={(e) => setColor(e.target.value)} />
         </div>
         <div className="form-group">
           <label>Line Width:</label>

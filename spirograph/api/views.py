@@ -7,7 +7,7 @@ def gcd(a, b):
         a, b = b, a % b
     return a
 
-def generate_circle_pattern(R, r, O):
+def generate_default_pattern(R, r, O):
     points = []
     for t in range(0, 360 * r // gcd(r, R)):
         theta = math.radians(t)
@@ -45,13 +45,13 @@ def spirograph_patterns(request):
     R = int(request.GET.get('R', 80))
     r = int(request.GET.get('r', 36))
     O = int(request.GET.get('O', 45))
-    pattern_type = request.GET.get('type', 'circle')
+    gear_type = request.GET.get('gearType', 'default')
 
-    if pattern_type == 'square':
+    if gear_type == 'square':
         points = generate_square_pattern(R, r, O)
-    elif pattern_type == 'triangle':
+    elif gear_type == 'triangle':
         points = generate_triangle_pattern(R, r, O)
     else:
-        points = generate_circle_pattern(R, r, O)
+        points = generate_default_pattern(R, r, O)
 
     return Response({"points": points})
