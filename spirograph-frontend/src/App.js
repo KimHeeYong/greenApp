@@ -10,16 +10,17 @@ const Spirograph = () => {
   const [O, setO] = useState(45);
   const [color, setColor] = useState('#000000');
   const [lineWidth, setLineWidth] = useState(2);
+  const [patternType, setPatternType] = useState('circle');
   const [error, setError] = useState('');
   const canvasRef = useRef(null);
 
-  const fetchPattern = (newR = R, newr = r, newO = O) => {
+  const fetchPattern = (newR = R, newr = r, newO = O, newPatternType = patternType) => {
     if (newR <= 0 || newr <= 0 || newO <= 0) {
       setError('R, r, O values must be positive numbers.');
       return;
     }
     setError('');
-    axios.get(`http://localhost:8000/api/patterns/?R=${newR}&r=${newr}&O=${newO}`)
+    axios.get(`http://localhost:8000/api/patterns/?R=${newR}&r=${newr}&O=${newO}&type=${newPatternType}`)
       .then(response => {
         setPoints(response.data.points);
       })
@@ -57,6 +58,12 @@ const Spirograph = () => {
     fetchPattern(R, r, O);
   };
 
+  const handlePatternTypeChange = (event) => {
+    const value = event.target.value;
+    setPatternType(value);
+    fetchPattern(R, r, O, value);
+  };
+
   const saveImage = () => {
     const canvas = canvasRef.current;
     const link = document.createElement('a');
@@ -69,6 +76,15 @@ const Spirograph = () => {
     <div className="container">
       <h1>Spirograph Patterns</h1>
       <form>
+        <div className="form-group">
+          <label>Pattern Type:</label>
+          <select value={patternType} onChange={handlePatternTypeChange}>
+            <option value="circle">Circle</option>
+            <option value="square">Square</option>
+            <option value="triangle">Triangle</option>
+            {/* 추가 패턴 종류를 여기에 추가할 수 있습니다 */}
+          </select>
+        </div>
         <div className="form-group">
           <label>R:</label>
           <input type="number" value={R} onChange={handleInputChange(setR)} />
