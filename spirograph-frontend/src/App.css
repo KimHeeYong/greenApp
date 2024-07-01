@@ -6,6 +6,34 @@
   height: 40vmin;
   pointer-events: none;
 }
+.container {
+  text-align: center;
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+label {
+  margin-right: 10px;
+}
+
+input {
+  padding: 5px;
+  font-size: 16px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {

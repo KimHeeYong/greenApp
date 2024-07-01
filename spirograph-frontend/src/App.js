@@ -1,15 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import './App.css';  // 스타일을 위한 CSS 파일 추가
 
 const Spirograph = () => {
   const [points, setPoints] = useState([]);
   const [R, setR] = useState(80);
   const [r, setr] = useState(36);
   const [O, setO] = useState(45);
+  const [error, setError] = useState('');
   const canvasRef = useRef(null);
 
   const fetchPattern = () => {
+    if (R <= 0 || r <= 0 || O <= 0) {
+      setError('R, r, O values must be positive numbers.');
+      return;
+    }
+    setError('');
     axios.get(`http://localhost:8000/api/patterns/?R=${R}&r=${r}&O=${O}`)
       .then(response => {
         setPoints(response.data.points);
@@ -54,27 +61,22 @@ const Spirograph = () => {
   };
 
   return (
-    <div>
+    <div className="container">
       <h1>Spirograph Patterns</h1>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>
-            R:
-            <input type="number" value={R} onChange={(e) => setR(e.target.value)} />
-          </label>
+        <div className="form-group">
+          <label>R:</label>
+          <input type="number" value={R} onChange={(e) => setR(Number(e.target.value))} />
         </div>
-        <div>
-          <label>
-            r:
-            <input type="number" value={r} onChange={(e) => setr(e.target.value)} />
-          </label>
+        <div className="form-group">
+          <label>r:</label>
+          <input type="number" value={r} onChange={(e) => setr(Number(e.target.value))} />
         </div>
-        <div>
-          <label>
-            O:
-            <input type="number" value={O} onChange={(e) => setO(e.target.value)} />
-          </label>
+        <div className="form-group">
+          <label>O:</label>
+          <input type="number" value={O} onChange={(e) => setO(Number(e.target.value))} />
         </div>
+        {error && <div className="error">{error}</div>}
         <button type="submit">Generate Pattern</button>
       </form>
       <button onClick={saveImage}>Save Image</button>
