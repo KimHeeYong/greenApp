@@ -40,6 +40,18 @@ def generate_triangle_pattern(R, r, O):
             points.append((y, x))
     return points
 
+def generate_star_pattern(R, r, O):
+    points = []
+    for t in range(0, 360 * r // gcd(r, R)):
+        theta = math.radians(t)
+        x = (R - r) * math.cos(theta) + O * math.cos((R - r) * theta / r)
+        y = (R - r) * math.sin(theta) - O * math.sin((R - r) * theta / r)
+        if t % 144 < 72:
+            points.append((x, y))
+        else:
+            points.append((y, x))
+    return points
+
 @api_view(['GET'])
 def spirograph_patterns(request):
     R = int(request.GET.get('R', 80))
@@ -51,6 +63,8 @@ def spirograph_patterns(request):
         points = generate_square_pattern(R, r, O)
     elif gear_type == 'triangle':
         points = generate_triangle_pattern(R, r, O)
+    elif gear_type == 'star':
+        points = generate_star_pattern(R, r, O)
     else:
         points = generate_default_pattern(R, r, O)
 

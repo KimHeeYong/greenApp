@@ -11,6 +11,7 @@ const Spirograph = () => {
   const [lineWidth, setLineWidth] = useState(2);
   const [gearType, setGearType] = useState('default');
   const [speed, setSpeed] = useState(5);
+  const [color, setColor] = useState('#000000');
   const [error, setError] = useState('');
   const canvasRef = useRef(null);
 
@@ -43,7 +44,6 @@ const Spirograph = () => {
       let i = 0;
       const drawStep = () => {
         if (i < points.length - 1) {
-          const color = `hsl(${Math.random() * 360}, 100%, 50%)`;
           ctx.strokeStyle = color;
           ctx.beginPath();
           ctx.moveTo(250 + points[i][0], 250 + points[i][1]);
@@ -55,7 +55,7 @@ const Spirograph = () => {
       };
       drawStep();
     }
-  }, [points, lineWidth, speed]);
+  }, [points, lineWidth, speed, color]);
 
   const handleInputChange = (setter) => (event) => {
     const value = Number(event.target.value);
@@ -66,10 +66,18 @@ const Spirograph = () => {
   const handleGearTypeChange = (event) => {
     const value = event.target.value;
     setGearType(value);
-    setR(80); // 최적의 R 비율로 초기화
-    setr(36); // 최적의 r 비율로 초기화
-    setO(45); // 최적의 O 비율로 초기화
-    fetchPattern(80, 36, 45, value);
+    // 최적의 R, r, O 비율을 설정합니다.
+    const optimalValues = {
+      default: { R: 80, r: 36, O: 45 },
+      square: { R: 70, r: 30, O: 40 },
+      triangle: { R: 60, r: 25, O: 35 },
+      star: { R: 50, r: 20, O: 30 },
+    };
+    const { R: optimalR, r: optimalr, O: optimalO } = optimalValues[value] || optimalValues.default;
+    setR(optimalR);
+    setr(optimalr);
+    setO(optimalO);
+    fetchPattern(optimalR, optimalr, optimalO, value);
   };
 
   const saveImage = () => {
@@ -90,6 +98,7 @@ const Spirograph = () => {
             <option value="default">Default</option>
             <option value="square">Square</option>
             <option value="triangle">Triangle</option>
+            <option value="star">Star</option>
             {/* 추가 기어 종류를 여기에 추가할 수 있습니다 */}
           </select>
         </div>
@@ -108,6 +117,10 @@ const Spirograph = () => {
         <div className="form-group">
           <label>Line Width:</label>
           <input type="number" value={lineWidth} min="1" max="10" onChange={(e) => setLineWidth(Number(e.target.value))} />
+        </div>
+        <div className="form-group">
+          <label>Color:</label>
+          <input type="color" value={color} onChange={(e) => setColor(e.target.value)} />
         </div>
         <div className="form-group">
           <label>Speed:</label>
